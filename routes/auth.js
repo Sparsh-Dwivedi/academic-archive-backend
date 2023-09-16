@@ -2,6 +2,7 @@ const router=require("express").Router();
 const User =require("../models/User");
 const CryptoJS=require("crypto-js");
 const jwt=require("jsonwebtoken");
+const { verifyTokenAndAuthorization } = require("./middleware");
 
 //user nave available
 router.post("/find",async (req,res)=>{
@@ -46,6 +47,7 @@ router.post("/login",async (req,res)=>{
 
     try{
         const user=await User.findOne({username:req.body.username});//get user with given username
+        console.log(user);
         if(!user){
             res.status(401).json("Wrong credentials")
             return ;
@@ -75,6 +77,28 @@ router.post("/login",async (req,res)=>{
     catch(err){
         return res.status(500).json(err);
     }
+
+});
+
+//update user
+router.post("/user/update",verifyTokenAndAuthorization,async (req,res)=>{
+
+    if(req.body.password || req.body.username){
+        return res.status(404).json({error:"Username & password can't be updated"});
+    }
+
+    const user = res.locals.user;
+    const uid = req.body.uid ? req.body.uid : user.uid
+    const filter = { uid: uid };
+    try {
+        const findUser = await User.findOneAndUpdate(filter, req.body).clone().exec()
+        return res.status(200).json({
+            status: 'User updated successfully',
+        })
+    }
+    catch (error) {
+        return res.status(500).json(error);
+    }    
 
 });
 

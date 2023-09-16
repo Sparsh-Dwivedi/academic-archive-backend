@@ -10,6 +10,7 @@ const UserSchema=new mongoose.Schema(
         ph:{type:Number},
         password:{type:String,required:true},
         avatar:{type:String,default:'https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Free-Download.png'},
+        department:{type:String},
         isAdmin:{
             type:Boolean,
             default:false,
