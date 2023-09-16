@@ -1,0 +1,75 @@
+conference
+{
+    "uid":"64fd711a0604578415de9b4d",
+    "title":"Why aren't we using 3d user interfaces, and will we ever?",
+    "authors":[
+        {
+            "first":"Raman",
+            "last":"Balakrishnan"
+        },
+        {
+            "first":"Ramon",
+            "last":"Brown"
+        }
+    ],
+    "conferenceTitle":"IEEE Symposium on 3D User Interfaces",
+    "conferenceDate":"2006, March 25-26",
+    "publishedOn":"2006, March 25-26",
+    "publisher":"IEEE",
+    "doi":"https://doi.org/10.1109/VR.2006.148",
+    "isbn":"1-4244-0225-5",
+    "location":"Alexandria, VA, USA"
+}
+
+chapter
+{
+    "uid":"64fd711a0604578415de9b4d",
+    "title":"Why aren't we using 3d user interfaces, and will we ever?",
+    "authors":[
+        {
+            "first":"Raman",
+            "last":"Balakrishnan"
+        },
+        {
+            "first":"Ramon",
+            "last":"Brown"
+        }
+    ],
+    "editors":[
+        {
+            "first":"Raman",
+            "last":"Balakrishnan"
+        },
+        {
+            "first":"Ramon",
+            "last":"Brown"
+        }
+    ],
+    "bookTitle":"IEEE Symposium on 3D User Interfaces",
+    "publishedOn":"2006, March 25-26",
+    "doi":"https://doi.org/10.1109/VR.2006.148",
+    "publisher":"IEEE",
+    "isbn":"1-4244-0225-5",
+    "pageRange":"Alexandria, VA, USA"
+}
+journal
+{
+    "uid":"64fd711a0604578415de9b4d",
+    "title":"Why aren't we using 3d user interfaces, and will we ever?",
+    "authors":[
+        {
+            "first":"Raman",
+            "last":"Balakrishnan"
+        },
+        {
+            "first":"Ramon",
+            "last":"Brown"
+        }
+    ],
+    "journalTitle":"Chemistry & Materials Sci.",
+    "volumeIssue":"12",
+    "pageRange":"(2-3)",
+    "publishedOn":"2006, March 25-26",
+    "doi":"https://doi.org/10.1109/VR.2006.148",
+    "issn":"1-4244-0225-5"
+}

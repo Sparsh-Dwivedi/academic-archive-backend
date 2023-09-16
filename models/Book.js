@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const PaperSchema=new mongoose.Schema(
+const BookSchema=new mongoose.Schema(
     {
         uid: {
             type: String,
@@ -9,30 +9,31 @@ const PaperSchema=new mongoose.Schema(
         title: {
             type: String,
         },
-        submittedOn:{
-            type:String,
-        },
+        authors:[
+            {
+                first:{type:String},
+                last:{type:String},
+            },
+        ],
         publishedOn:{
-            type:String,
-        },
-        volume:{
-            type:Integer,
-        },
-        year:{
             type:String,
         },
         doi:{
             type:String,
         },
-        authers:[
-            {
-                type:String,
-            },
-        ]
+        publisher:{
+            type:String,
+        },
+        isbn:{
+            type:String,
+        },
+        edition:{
+            type:String,
+        },
     },
     {timestamps:true}
 );
 
-module.exports=mongoose.model("User",PaperSchema);
+module.exports=mongoose.model("Book",BookSchema);
 
 //this is how we can create an model 

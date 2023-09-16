@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const authRoute=require("./routes/auth")
+const papersRoute=require("./routes/papers")
 
 const cors= require("cors");
 const dotenv=require("dotenv");
@@ -18,6 +19,7 @@ mongoose
 app.use(express.json());  
 
 app.use("/api/auth",authRoute);
+app.use("/api/papers",papersRoute);
 
 
 app.get('/',(req,res)=>{
