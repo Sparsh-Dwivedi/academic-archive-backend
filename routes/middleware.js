@@ -4,9 +4,10 @@ const jwt=require("jsonwebtoken");
 //verify auth token
 const verifyToken=(req,res,next)=>{
     const authHeader=req.headers.token; 
-    // console.log(authHeader)
+    console.log(authHeader)
     if(authHeader){ 
         const token=authHeader.split(" ")[1];//bearer-idon't know why
+        console.log(token)
         jwt.verify(token,process.env.JWT_SEC,(err,user)=>{//third parameters takes parameter that output expects
             if(err){ 
                 return res.status(403).json("Token is not valid"); 
@@ -26,7 +27,7 @@ const verifyToken=(req,res,next)=>{
 const verifyTokenAndAuthorization=(req,res,next)=>{
     //after token verification if user's id in database is equal to id in params(link) then only it proceeds to next() which is parent func
     verifyToken(req,res,()=>{ 
-        if(req.user.id==req.body.uid){
+        if(req.user._id==req.body._id){
             next();
         }
         else{

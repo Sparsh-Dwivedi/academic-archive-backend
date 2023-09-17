@@ -4,17 +4,18 @@ const CryptoJS=require("crypto-js");
 const jwt=require("jsonwebtoken");
 const { verifyTokenAndAuthorization } = require("./middleware");
 
-//user nave available
+//find user with username
 router.post("/find",async (req,res)=>{
     
     try{
-        const user=await User.findOne({username:req.body.username});//get user with given username
-        return res.status(200).json(user);  
+        const user=await User.findOne({username:req.body.username});
+        if(!user)   return res.status(404).json({error:"User Not Found"});
+        const {password,isAdmin,...rest}=user._doc;
+        return res.status(200).json(rest);  
     } catch(err){
         res.status(500).json("error occur"+err); 
         return res;
     }
-
 });
 
 //REGISTER
@@ -62,7 +63,7 @@ router.post("/login",async (req,res)=>{
         
         const accessToken =jwt.sign(
             {
-            id:user._id,
+            _id:user._id,
             isAdmin:user.isAdmin,
             },
             process.env.JWT_SEC,
@@ -86,20 +87,16 @@ router.post("/user/update",verifyTokenAndAuthorization,async (req,res)=>{
     if(req.body.password || req.body.username){
         return res.status(404).json({error:"Username & password can't be updated"});
     }
-
-    const user = res.locals.user;
-    const uid = req.body.uid ? req.body.uid : user.uid
-    const filter = { uid: uid };
+    const {_id,...rest} = req.body;
     try {
-        const findUser = await User.findOneAndUpdate(filter, req.body).clone().exec()
-        return res.status(200).json({
-            status: 'User updated successfully',
-        })
+        let prev=await User.findById(req.body._id);
+        if(!prev || prev._id!=req.body._id){return res.status(404).send("Unable to update User")};
+        prev=await User.findByIdAndUpdate(req.body._id,{$set:rest});
+        return res.json({"Success":"User Updated Successfully"});  
     }
     catch (error) {
         return res.status(500).json(error);
-    }    
-
+    }
 });
 
 module.exports=router;
