@@ -9,8 +9,10 @@ const { verifyTokenAndAuthorization } = require("./middleware");
 router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
     const type=req.params.type;
     var retVal={};
+    const {_id,...rest}=req.body;
+    const paper={uid:_id,...rest};
     if(type==='book'){
-        const newBook = new Book(req.body);
+        const newBook = new Book(paper);
         try{
             retVal=await newBook.save(); 
         } catch(err){
@@ -18,7 +20,7 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
         }
     }
     else if(type==='chapter'){
-        const newBookCh = new Chapter(req.body);
+        const newBookCh = new Chapter(paper);
         try{
             retVal=await newBookCh.save(); 
         } catch(err){
@@ -26,7 +28,7 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
         }
     }
     else if(type==='journal'){
-        const newJournal = new Journal(req.body);
+        const newJournal = new Journal(paper);
         try{
             retVal=await newJournal.save(); 
         } catch(err){
@@ -34,7 +36,7 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
         }
     }
     else if(type==='conference'){
-        const newConference = new Conference(req.body);
+        const newConference = new Conference(paper);
         try{
             retVal=await newConference.save(); 
         } catch(err){
@@ -47,14 +49,14 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
 
 //update the paper
 router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
-    const {uid,_id,...others}=req.body;
+    const {_id,pid,...others}=req.body; //_id is userid & pid is paper id
     const change=others;
-    console.log(change)
+    const type=req.params.type
     if(type==='book'){
         try {
-            let prev=await Book.findById(req.body._id);
-            if(!prev || prev.uid!=req.body.uid){return res.status(404).send("Unable to update")};
-            prev=await Book.findByIdAndUpdate(req.body._id,{$set:change});
+            let prev=await Book.findById(req.body.pid);
+            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            prev=await Book.findByIdAndUpdate(req.body.pid,{$set:change});
             return res.json({"Success":"Updated Successfully below prev"});  
         }
         catch (error) {
@@ -63,9 +65,9 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     }
     else if(type==='chapter'){
         try {
-            let prev=await Chapter.findById(req.body._id);
-            if(!prev || prev.uid!=req.body.uid){return res.status(404).send("Unable to update")};
-            prev=await Chapter.findByIdAndUpdate(req.body._id,{$set:change});
+            let prev=await Chapter.findById(req.body.pid);
+            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            prev=await Chapter.findByIdAndUpdate(req.body.pid,{$set:change});
             return res.json({"Success":"Updated Successfully below prev"});  
         }
         catch (error) {
@@ -74,9 +76,9 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     }
     else if(type==='journal'){
         try {
-            let prev=await Journal.findById(req.body._id);
-            if(!prev || prev.uid!=req.body.uid){return res.status(404).send("Unable to update")};
-            prev=await Journal.findByIdAndUpdate(req.body._id,{$set:change});
+            let prev=await Journal.findById(req.body.pid);
+            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            prev=await Journal.findByIdAndUpdate(req.body.pid,{$set:change});
             return res.json({"Success":"Updated Successfully below prev"});  
         }
         catch (error) {
@@ -85,9 +87,9 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     }
     else if(type==='conference'){
         try {
-            let prev=await Conference.findById(req.body._id);
-            if(!prev || prev.uid!=req.body.uid){return res.status(404).send("Unable to update")};
-            prev=await Conference.findByIdAndUpdate(req.body._id,{$set:change});
+            let prev=await Conference.findById(req.body.pid);
+            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            prev=await Conference.findByIdAndUpdate(req.body.pid,{$set:change});
             return res.json({"Success":"Updated Successfully below prev"});  
         }
         catch (error) {
