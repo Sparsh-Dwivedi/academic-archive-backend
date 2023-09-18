@@ -5,7 +5,7 @@ const Conference = require("../models/Conference");
 const Journal = require("../models/Journal");
 const { verifyTokenAndAuthorization } = require("./middleware");
 
-
+//create the paper
 router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
     const type=req.params.type;
     var retVal={};
@@ -45,6 +45,7 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
 
 });
 
+//update the paper
 router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     const {uid,_id,...others}=req.body;
     const change=others;
@@ -94,6 +95,31 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
         }
     }
      
+});
+
+//get the paper of particular user
+router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const type=req.params.type;
+        if(type==='book'){
+            const ret=await Book.find({uid:req.body._id});
+            return res.status(200).json(ret);
+        }
+        if(type==='chapter'){
+            const ret=await Chapter.find({uid:req.body._id});
+            return res.status(200).json(ret);
+        }
+        if(type==='journal'){
+            const ret=await Journal.find({uid:req.body._id});
+            return res.status(200).json(ret);
+        }
+        if(type==='conference'){
+            const ret=await Conference.find({uid:req.body._id});
+            return res.status(200).json(ret);
+        }
+    } catch (error) {  
+        return res.status(500).json(error);
+    }
 });
 
 module.exports=router;
