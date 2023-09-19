@@ -43,6 +43,7 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
             return res.status(500).json("error occur"+err); 
         }
     }
+    else res.status(404).json({error:'no matching type'});
     return res.status(200).json(retVal);
 
 });
@@ -96,6 +97,8 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
             return res.status(500).json(error);
         }
     }
+    else res.status(404).json({error:'no matching type'});
+    
      
 });
 
@@ -107,18 +110,20 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
             const ret=await Book.find({uid:req.body._id});
             return res.status(200).json(ret);
         }
-        if(type==='chapter'){
+        else if(type==='chapter'){
             const ret=await Chapter.find({uid:req.body._id});
             return res.status(200).json(ret);
         }
-        if(type==='journal'){
+        else if(type==='journal'){
             const ret=await Journal.find({uid:req.body._id});
             return res.status(200).json(ret);
         }
-        if(type==='conference'){
+        else if(type==='conference'){
             const ret=await Conference.find({uid:req.body._id});
             return res.status(200).json(ret);
         }
+        else res.status(404).json({error:'no matching type'});
+
     } catch (error) {  
         return res.status(500).json(error);
     }
