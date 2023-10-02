@@ -12,13 +12,17 @@ const ChapterSchema=new mongoose.Schema(
         authors:[
             {
                 first:{type:String},
+                middle:{type:String},
                 last:{type:String},
+                corresponding:{type:bool}
             },
         ],
         editors:[
             {
                 first:{type:String},
+                middle:{type:String},
                 last:{type:String},
+                corresponding:{type:bool}
             },
         ],
         bookTitle:{
