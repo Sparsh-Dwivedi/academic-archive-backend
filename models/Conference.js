@@ -12,7 +12,9 @@ const ConferenceSchema=new mongoose.Schema(
         authors:[
             {
                 first:{type:String},
+                middle:{type:String},
                 last:{type:String},
+                corresponding:{type:Boolean}
             },
         ],
         conferenceTitle:{

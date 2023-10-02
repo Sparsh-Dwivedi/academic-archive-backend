@@ -14,7 +14,7 @@ const ChapterSchema=new mongoose.Schema(
                 first:{type:String},
                 middle:{type:String},
                 last:{type:String},
-                corresponding:{type:bool}
+                corresponding:{type:Boolean}
             },
         ],
         editors:[
@@ -22,7 +22,6 @@ const ChapterSchema=new mongoose.Schema(
                 first:{type:String},
                 middle:{type:String},
                 last:{type:String},
-                corresponding:{type:bool}
             },
         ],
         bookTitle:{

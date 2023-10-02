@@ -12,13 +12,18 @@ const JournalSchema=new mongoose.Schema(
         authors:[
             {
                 first:{type:String},
+                middle:{type:String},
                 last:{type:String},
+                corresponding:{type:Boolean}
             },
         ],
         journalTitle:{
             type:String,
         },
-        volumeIssue:{
+        volume:{
+            type:String,
+        },
+        issue:{
             type:String,
         },
         pageRange:{

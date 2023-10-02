@@ -12,7 +12,9 @@ const BookSchema=new mongoose.Schema(
         authors:[
             {
                 first:{type:String},
+                middle:{type:String},
                 last:{type:String},
+                corresponding:{type:Boolean}
             },
         ],
         publishedOn:{
