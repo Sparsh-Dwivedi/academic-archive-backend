@@ -2,10 +2,12 @@ const mongoose=require("mongoose");
 
 const ChapterSchema=new mongoose.Schema(
     {
-        uid: {
+        uid: [
+            {
             type: String,
             required: true,
-        },
+            },
+        ],
         title: {
             type: String,
         },
@@ -32,6 +34,7 @@ const ChapterSchema=new mongoose.Schema(
         },
         doi:{
             type:String,
+            unique:true
         },
         publisher:{
             type:String,

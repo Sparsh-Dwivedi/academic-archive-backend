@@ -2,10 +2,12 @@ const mongoose=require("mongoose");
 
 const BookSchema=new mongoose.Schema(
     {
-        uid: {
+        uid: [
+            {
             type: String,
             required: true,
-        },
+            },
+        ],
         title: {
             type: String,
         },
@@ -22,6 +24,7 @@ const BookSchema=new mongoose.Schema(
         },
         doi:{
             type:String,
+            unique:true
         },
         publisher:{
             type:String,

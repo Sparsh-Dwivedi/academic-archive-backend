@@ -10,41 +10,110 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
     const type=req.params.type;
     var retVal={};
     const {_id,...rest}=req.body;
-    const paper={uid:_id,...rest};
+    const adderUid=_id;
+    const paper={...rest};
     if(type==='book'){
-        const newBook = new Book(paper);
-        try{
-            retVal=await newBook.save(); 
-        } catch(err){
-            return res.status(500).json("error occur"+err); 
+        const oldBook=await Book.find({doi:paper.doi});
+        if(oldBook.length){
+            var users=oldBook[0].uid;
+            const pid=oldBook[0]._id;
+            if(users.find(ele=>ele===adderUid)){
+                return res.status(201).json({message:'Paper Already Exist'})
+            }
+            else {
+                try{
+                    retVal=await Book.updateOne({_id:pid},{$push:{uid:adderUid}});
+                } catch(err){
+                    return res.status(500).json({message:err});
+                }
+            }
+        }
+        else{   //new book
+            const newBook = new Book({uid:[adderUid],...paper});
+            try{
+                retVal=await newBook.save(); 
+            } catch(err){
+                return res.status(500).json({message:err}); 
+            }
         }
     }
     else if(type==='chapter'){
-        const newBookCh = new Chapter(paper);
-        try{
-            retVal=await newBookCh.save(); 
-        } catch(err){
-            return res.status(500).json("error occur"+err);
+        const oldChapter=await Chapter.find({doi:paper.doi});
+        if(oldChapter.length){
+            var users=oldChapter[0].uid;
+            const pid=oldChapter[0]._id;
+            if(users.find(ele=>ele===adderUid)){
+                return res.status(201).json({message:'Paper Already Exist'})
+            }
+            else {  //paper exist but new adder
+                try{
+                    retVal=await Chapter.updateOne({_id:pid},{$push:{uid:adderUid}});
+                } catch(err){
+                    return res.status(500).json({message:err});
+                }
+            }
+        }
+        else{   //new book
+            const newChapter = new Chapter({uid:[adderUid],...paper});
+            try{
+                retVal=await newChapter.save(); 
+            } catch(err){
+                return res.status(500).json({message:err}); 
+            }
         }
     }
     else if(type==='journal'){
-        const newJournal = new Journal(paper);
-        try{
-            retVal=await newJournal.save(); 
-        } catch(err){
-            return res.status(500).json("error occur"+err); 
+        const oldJournal=await Journal.find({doi:paper.doi});
+        if(oldJournal.length){
+            var users=oldJournal[0].uid;
+            const pid=oldJournal[0]._id;
+            if(users.find(ele=>ele===adderUid)){
+                return res.status(201).json({message:'Paper Already Exist'})
+            }
+            else {  //paper exist but new adder
+                try{
+                    retVal=await Journal.updateOne({_id:pid},{$push:{uid:adderUid}});
+                } catch(err){
+                    return res.status(500).json({message:err});
+                }
+            }
+        }
+        else{   //new book
+            const newJournal = new Journal({uid:[adderUid],...paper});
+            try{
+                retVal=await newJournal.save(); 
+            } catch(err){
+                return res.status(500).json({message:err}); 
+            }
         }
     }
     else if(type==='conference'){
-        const newConference = new Conference(paper);
-        try{
-            retVal=await newConference.save(); 
-        } catch(err){
-            return res.status(500).json("error occur"+err); 
+        const oldConference=await Conference.find({doi:paper.doi});
+        if(oldConference.length){
+            var users=oldConference[0].uid;
+            const pid=oldConference[0]._id;
+            if(users.find(ele=>ele===adderUid)){
+                return res.status(201).json({message:'Paper Already Exist'})
+            }
+            else {  //paper exist but new adder
+                try{
+                    retVal=await Conference.updateOne({_id:pid},{$push:{uid:adderUid}});
+                } catch(err){
+                    return res.status(500).json({message:err});
+                }
+            }
+        }
+        else{   //new 
+            const newConference = new Conference({uid:[adderUid],...paper});
+            try{
+                retVal=await newConference.save(); 
+            } catch(err){
+                return res.status(500).json({message:err}); 
+            }
         }
     }
-    else res.status(404).json({error:'no matching type'});
-    return res.status(200).json(retVal);
+    else res.status(404).json({message:'no matching type'});
+    return res.status(200).json({message:'saved successfully',paper:retVal});
 
 });
 
@@ -56,31 +125,37 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     if(type==='book'){
         try {
             let prev=await Book.findById(req.body.pid);
-            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            if(!prev || prev.uid!=req.body._id){
+                return res.status(404).json({message:"Unable to update"})
+            };
             prev=await Book.findByIdAndUpdate(req.body.pid,{$set:change});
-            return res.json({"Success":"Updated Successfully below prev"});  
+            return res.status(200).json({message:"Paper Updated Successfully "});  
         }
         catch (error) {
-            return res.status(500).json(error);
+            return res.status(500).json({message:error});
         }
     }
     else if(type==='chapter'){
         try {
             let prev=await Chapter.findById(req.body.pid);
-            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            if(!prev || prev.uid!=req.body._id){
+                return res.status(404).send({message:"Unable to update"})
+            };
             prev=await Chapter.findByIdAndUpdate(req.body.pid,{$set:change});
-            return res.json({"Success":"Updated Successfully below prev"});  
+            return res.status(200).json({message:"Updated Successfully below prev"});  
         }
         catch (error) {
-            return res.status(500).json(error);
+            return res.status(500).json({message:error});
         }
     }
     else if(type==='journal'){
         try {
             let prev=await Journal.findById(req.body.pid);
-            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            if(!prev || prev.uid!=req.body._id){
+                return res.status(404).send({message:"Unable to update"})
+            };
             prev=await Journal.findByIdAndUpdate(req.body.pid,{$set:change});
-            return res.json({"Success":"Updated Successfully below prev"});  
+            return res.status(200).json({message:"Paper Updated Successfully"});  
         }
         catch (error) {
             return res.status(500).json(error);
@@ -89,43 +164,45 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     else if(type==='conference'){
         try {
             let prev=await Conference.findById(req.body.pid);
-            if(!prev || prev.uid!=req.body._id){return res.status(404).send("Unable to update")};
+            if(!prev || prev.uid!=req.body._id){
+                return res.status(404).send({message:"Unable to update"})
+            };
             prev=await Conference.findByIdAndUpdate(req.body.pid,{$set:change});
-            return res.json({"Success":"Updated Successfully below prev"});  
+            return res.status(200).json({message:"Paper Updated Successfully"});  
         }
         catch (error) {
-            return res.status(500).json(error);
+            return res.status(500).json({message:error});
         }
     }
-    else res.status(404).json({error:'no matching type'});
+    else res.status(404).json({message:'no matching type'});
     
-     
 });
 
 //get the paper of particular user
-router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
+router.post('/getall/:type',async(req,res)=>{
     try {
         const type=req.params.type;
+        const requesterUid=req.body._id;
         if(type==='book'){
-            const ret=await Book.find({uid:req.body._id});
+            const ret=await Book.find({uid:requesterUid});
             return res.status(200).json(ret);
         }
         else if(type==='chapter'){
-            const ret=await Chapter.find({uid:req.body._id});
+            const ret=await Chapter.find({uid:requesterUid});
             return res.status(200).json(ret);
         }
         else if(type==='journal'){
-            const ret=await Journal.find({uid:req.body._id});
+            const ret=await Journal.find({uid:requesterUid});
             return res.status(200).json(ret);
         }
         else if(type==='conference'){
-            const ret=await Conference.find({uid:req.body._id});
+            const ret=await Conference.find({uid:requesterUid});
             return res.status(200).json(ret);
         }
-        else res.status(404).json({error:'no matching type'});
+        else res.status(404).json({message:'no matching type'});
 
     } catch (error) {  
-        return res.status(500).json(error);
+        return res.status(500).json({message:error});
     }
 });
 

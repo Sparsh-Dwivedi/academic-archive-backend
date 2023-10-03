@@ -2,10 +2,12 @@ const mongoose=require("mongoose");
 
 const JournalSchema=new mongoose.Schema(
     {
-        uid: {
+        uid: [
+            {
             type: String,
             required: true,
-        },
+            },
+        ],
         title: {
             type: String,
         },
@@ -34,6 +36,7 @@ const JournalSchema=new mongoose.Schema(
         },
         doi:{
             type:String,
+            unique:true
         },  
         issn:{
             type:String,

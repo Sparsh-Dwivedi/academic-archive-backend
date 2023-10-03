@@ -2,10 +2,12 @@ const mongoose=require("mongoose");
 
 const ConferenceSchema=new mongoose.Schema(
     {
-        uid: {
+        uid: [
+            {
             type: String,
             required: true,
-        },
+            },
+        ],
         title: {
             type: String,
         },
@@ -31,6 +33,7 @@ const ConferenceSchema=new mongoose.Schema(
         },
         doi:{
             type:String,
+            unique:true
         },
         isbn:{
             type:String,
