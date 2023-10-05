@@ -1,4 +1,5 @@
 const router=require("express").Router();
+const { apa,mla } = require("../citation/book");
 const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
@@ -206,52 +207,71 @@ router.post('/getall/:type',async(req,res)=>{
     }
 });
 
-router.post('/search/:type',async(req,res)=>{
+router.post('/search/:type/:cite',async(req,res)=>{
     try {
+        console.log(req.body)
         const query=req.body.query?req.body.query:'';
         const start=req.body.start?req.body.start:"1947-08-15";
+        const uid=req.body.uid?req.body.uid:'';
+        const department=req.body.department?req.body.department:'';
         const end=req.body.end?req.body.end:"2025-01-01";
         const type=req.params.type;
+        const cite=req.params.cite;
+        var prev=[];
         if(type==='chapter'){
-            const prev=await Chapter.find({
+            prev=await Chapter.find({
                 $and: [
                     {"title":{$regex:query}},
                     { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } }
+                    { "publishedOn": { $lte: end } },
+                    { "uid": uid},
+                    { "department": department},
                   ]
             });
-            return res.json(prev);
         }
         else if(type==='book'){
-            const prev=await Book.find({
+            prev=await Book.find({
                 $and: [
                     {"title":{$regex:query}},
                     { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } }
+                    { "publishedOn": { $lte: end } },
+                    { "uid": uid},
+                    { "department": department},
                   ]
             });
-            return res.json(prev);
         }
         else if(type==='journal'){
-            const prev=await Journal.find({
+            prev=await Journal.find({
                 $and: [
                     {"title":{$regex:query}},
                     { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } }
+                    { "publishedOn": { $lte: end } },
+                    { "uid": uid},
+                    { "department": department},
                   ]
             });
-            return res.json(prev);
         }
         else if(type==='conference'){
-            const prev=await Conference.find({
+            prev=await Conference.find({
                 $and: [
                     {"title":{$regex:query}},
                     { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } }
+                    { "publishedOn": { $lte: end } },
+                    { "uid": uid},
+                    { "department": department},
                   ]
             });
-            return res.json(prev);
         }
+        // console.log(prev)
+        prev.sort(function(b, a) { 
+            return ((a.publishedOn < b.publishedOn) ? -1 : ((a.publishedOn> b.publishedOn) ? 1 : 0));
+        })
+        var temp=[];
+        for(let i=0;i<prev.length;i++){ 
+            if(cite==='mla')    temp.push(mla(prev[i]));
+            if(cite==='apa')    temp.push(apa(prev[i]));
+        }
+        return res.status(200).json(temp);
     } catch (error) {
         return res.status(500).json({message:error});
     }
