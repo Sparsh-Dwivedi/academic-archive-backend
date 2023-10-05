@@ -206,4 +206,56 @@ router.post('/getall/:type',async(req,res)=>{
     }
 });
 
+router.post('/search/:type',async(req,res)=>{
+    try {
+        const query=req.body.query?req.body.query:'';
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2025-01-01";
+        const type=req.params.type;
+        if(type==='chapter'){
+            const prev=await Chapter.find({
+                $and: [
+                    {"title":{$regex:query}},
+                    { "publishedOn": { $gte: start } },
+                    { "publishedOn": { $lte: end } }
+                  ]
+            });
+            return res.json(prev);
+        }
+        else if(type==='book'){
+            const prev=await Book.find({
+                $and: [
+                    {"title":{$regex:query}},
+                    { "publishedOn": { $gte: start } },
+                    { "publishedOn": { $lte: end } }
+                  ]
+            });
+            return res.json(prev);
+        }
+        else if(type==='journal'){
+            const prev=await Journal.find({
+                $and: [
+                    {"title":{$regex:query}},
+                    { "publishedOn": { $gte: start } },
+                    { "publishedOn": { $lte: end } }
+                  ]
+            });
+            return res.json(prev);
+        }
+        else if(type==='conference'){
+            const prev=await Conference.find({
+                $and: [
+                    {"title":{$regex:query}},
+                    { "publishedOn": { $gte: start } },
+                    { "publishedOn": { $lte: end } }
+                  ]
+            });
+            return res.json(prev);
+        }
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+});
+
+
 module.exports=router;

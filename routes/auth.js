@@ -9,11 +9,11 @@ router.post("/find",async (req,res)=>{
     
     try{
         const user=await User.findOne({username:req.body.username});
-        if(!user)   return res.status(404).json({error:"User Not Found"});
+        if(!user)   return res.status(200).json({found:0});
         const {password,isAdmin,...rest}=user._doc;
         return res.status(200).json(rest);  
     } catch(err){
-        res.status(500).json("error occur"+err); 
+        res.status(500).json({message:err}); 
         return res;
     }
 });
@@ -28,16 +28,17 @@ router.post("/register",async (req,res)=>{
         name:req.body.name?req.body.name:'User',
         ph:req.body.ph?req.body.ph:null,
         address:req.body.address?req.body.address:'INDIA',
-        password:CryptoJS.AES.encrypt(req.body.password,process.env.PASS_SEC).toString(),   
+        department:req.body.department,
+        qualification:req.body.qualification,
+        password:CryptoJS.AES.encrypt(req.body.password,process.env.PASS_SEC).toString()
         //to encrypt the password using aes
     });
     //created a user obj of given schema
-    
     try{
         const user=await newUser.save();   //saved it        
         return res.status(200).json(user);
     } catch(err){
-        res.status(500).json("error occur"+err); 
+        res.status(500).json({message:err}); 
         return ;
     }
 
@@ -99,4 +100,12 @@ router.post("/user/update",verifyTokenAndAuthorization,async (req,res)=>{
     }
 });
 
+router.get("/getallusers",async(req,res)=>{
+    try {
+        let prev=await User.find();
+        return res.status(200).json(prev);
+    } catch (error) {
+        
+    }
+});
 module.exports=router;
