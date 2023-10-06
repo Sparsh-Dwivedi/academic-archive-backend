@@ -1,9 +1,5 @@
-// import { capitalize } from "./service";
+const {capitalize}=require('./service')
 
-const capitalize=(str)=>{
-    if(!str || str.length==1 )  return str;
-    return str[0].toUpperCase()+str.slice(1);
-}
 const apa=(book)=>{ 
     var res="";
     if(book.authors.length===1){

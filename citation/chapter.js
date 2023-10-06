@@ -1,9 +1,5 @@
-// import { capitalize } from "./service";
+const {capitalize}=require('./service')
 
-const capitalize=(str)=>{
-    if(!str || str.length==1 )  return str;
-    return str[0].toUpperCase()+str.slice(1);
-}
 const apa=(chapter)=>{ 
     var res="";
     if(chapter.authors.length===1){
@@ -14,8 +10,8 @@ const apa=(chapter)=>{
     }
     else if(chapter.authors.length===3){
         res+=capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first).slice(0,1)+".,"
-        capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first).slice(0,1)+".,&"
-        +capitalize(chapter.authors[1].last)+","+capitalize(chapter.authors[1].first).slice(0,1);
+        capitalize(chapter.authors[1].last)+","+capitalize(chapter.authors[1].first).slice(0,1)+".,&"
+        +capitalize(chapter.authors[2].last)+","+capitalize(chapter.authors[2].first).slice(0,1);
     }
     else if(chapter.authors.length>3){
         res+=capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first).slice(0,1)+".,"
