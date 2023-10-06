@@ -1,6 +1,6 @@
 const {capitalize}=require('./service')
 
-const apa=(journal)=>{ 
+const journalApa=(journal)=>{ 
     var res="";
     if(journal.authors.length===1){
         res+=capitalize(journal.authors[0].last)+","+capitalize(journal.authors[0].first).slice(0,1);
@@ -27,7 +27,7 @@ const apa=(journal)=>{
     return res;
 }
 
-const mla=(journal)=>{ 
+const journalMla=(journal)=>{ 
     var res="";
     if(journal.authors.length===1){
         res+=capitalize(journal.authors[0].last)+","+capitalize(journal.authors[0].first);
@@ -54,7 +54,7 @@ const mla=(journal)=>{
     return res;
 }
 
-const chicago=(journal)=>{
+const journalChicago=(journal)=>{
     var res="";
     if(journal.authors.length===1){
         res+=capitalize(journal.authors[0].last)+","+capitalize(journal.authors[0].first);
@@ -81,7 +81,7 @@ const chicago=(journal)=>{
     return res;
 }
 
-const vancouver=(journal)=>{
+const journalVancouver=(journal)=>{
     var res="";
     if(journal.authors.length===1){
         res+=capitalize(journal.authors[0].last)+" "+capitalize(journal.authors[0].first).slice(0,1);
@@ -111,4 +111,4 @@ const vancouver=(journal)=>{
 }
 
 
-module.exports ={apa,mla,chicago,vancouver};
+module.exports ={journalApa,journalMla,journalChicago,journalVancouver};

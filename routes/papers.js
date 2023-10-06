@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const { apa,mla } = require("../citation/book");
+const { citePaper } = require("../citation/service");
 const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
@@ -263,15 +263,12 @@ router.post('/search/:type/:cite',async(req,res)=>{
             });
         }
         // console.log(prev)
-        prev.sort(function(b, a) { 
+        prev.sort(function(b, a) {  //newest first
             return ((a.publishedOn < b.publishedOn) ? -1 : ((a.publishedOn> b.publishedOn) ? 1 : 0));
         })
-        var temp=[];
-        for(let i=0;i<prev.length;i++){ 
-            if(cite==='mla')    temp.push(mla(prev[i]));
-            if(cite==='apa')    temp.push(apa(prev[i]));
-        }
-        return res.status(200).json(temp);
+        
+        const result=citePaper(prev,type,cite);
+        return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({message:error});
     }

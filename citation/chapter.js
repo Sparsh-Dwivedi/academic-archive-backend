@@ -1,6 +1,6 @@
 const {capitalize}=require('./service')
 
-const apa=(chapter)=>{ 
+const chapterApa=(chapter)=>{ 
     var res="";
     if(chapter.authors.length===1){
         res+=capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first).slice(0,1);
@@ -27,7 +27,7 @@ const apa=(chapter)=>{
     return res;
 }
 
-const mla=(chapter)=>{ 
+const chapterMla=(chapter)=>{ 
     var res="";
     if(chapter.authors.length===1){
         res+=capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first);
@@ -55,7 +55,7 @@ const mla=(chapter)=>{
     return res;
 }
 
-const chicago=(chapter)=>{
+const chapterChicago=(chapter)=>{
     var res="";
     if(chapter.authors.length===1){
         res+=capitalize(chapter.authors[0].last)+","+capitalize(chapter.authors[0].first);
@@ -82,7 +82,7 @@ const chicago=(chapter)=>{
     return res;
 }
 
-const vancouver=(chapter)=>{
+const chapterVancouver=(chapter)=>{
     var res="";
     if(chapter.authors.length===1){
         res+=capitalize(chapter.authors[0].last)+" "+capitalize(chapter.authors[0].first);
@@ -115,4 +115,4 @@ const vancouver=(chapter)=>{
 }
 
 
-module.exports ={apa,mla,chicago,vancouver};
+module.exports ={chapterApa,chapterMla,chapterChicago,chapterVancouver};

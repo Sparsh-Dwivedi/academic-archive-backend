@@ -1,7 +1,7 @@
 const {capitalize}=require('./service')
 
 
-const apa=(conference)=>{ 
+const conferenceApa=(conference)=>{ 
     var res="";
     if(conference.authors.length===1){
         res+=capitalize(conference.authors[0].last)+","+capitalize(conference.authors[0].first).slice(0,1);
@@ -33,7 +33,7 @@ const apa=(conference)=>{
     return res;
 }
 
-const mla=(conference)=>{ 
+const conferenceMla=(conference)=>{ 
     var res="";
     if(conference.authors.length===1){
         res+=capitalize(conference.authors[0].last)+","+capitalize(conference.authors[0].first);
@@ -63,7 +63,7 @@ const mla=(conference)=>{
     return res;
 }
 
-const chicago=(conference)=>{
+const conferenceChicago=(conference)=>{
     var res="";
     if(conference.authors.length===1){
         res+=capitalize(conference.authors[0].last)+","+capitalize(conference.authors[0].first);
@@ -93,7 +93,7 @@ const chicago=(conference)=>{
     return res;
 }
 
-const vancouver=(conference)=>{
+const conferenceVancouver=(conference)=>{
     var res="";
     if(conference.authors.length===1){
         res+=capitalize(conference.authors[0].last)+" "+capitalize(conference.authors[0].first).slice(0,1);
@@ -126,4 +126,4 @@ const vancouver=(conference)=>{
 }
 
 
-module.exports ={apa,mla,chicago,vancouver};
+module.exports ={conferenceApa,conferenceMla,conferenceChicago,conferenceVancouver};

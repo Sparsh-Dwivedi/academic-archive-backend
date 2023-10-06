@@ -1,6 +1,6 @@
 const {capitalize}=require('./service')
 
-const apa=(book)=>{ 
+const bookApa=(book)=>{ 
     var res="";
     if(book.authors.length===1){
         res+=capitalize(book.authors[0].last)+","+capitalize(book.authors[0].first).slice(0,1);
@@ -24,7 +24,7 @@ const apa=(book)=>{
     if(book.doi) res+=book.doi;
     return res;
 }
-const mla=(book)=>{ 
+const bookMla=(book)=>{ 
     var res="";
     if(book.authors.length===1){
         res+=capitalize(book.authors[0].last)+","+capitalize(book.authors[0].first);
@@ -49,7 +49,7 @@ const mla=(book)=>{
     return res;
 }
 
-const chicago=(book)=>{
+const bookChicago=(book)=>{
     var res="";
     if(book.authors.length===1){
         res+=capitalize(book.authors[0].last)+","+capitalize(book.authors[0].first);
@@ -73,7 +73,7 @@ const chicago=(book)=>{
     return res;
 }
 
-const vancouver=(book)=>{
+const bookVancouver=(book)=>{
     var res="";
     if(book.authors.length===1){
         res+=capitalize(book.authors[0].last)+" "+capitalize(book.authors[0].first);
@@ -100,4 +100,4 @@ const vancouver=(book)=>{
 }
 
 
-module.exports ={apa,mla,chicago,vancouver};
+module.exports ={bookApa,bookMla,bookChicago,bookVancouver};
