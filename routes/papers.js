@@ -180,7 +180,7 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
 });
 
 //get the paper of particular user
-router.post('/getall/:type',async(req,res)=>{
+router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
     try {
         const type=req.params.type;
         const requesterUid=req.body._id;
@@ -200,7 +200,7 @@ router.post('/getall/:type',async(req,res)=>{
             const ret=await Conference.find({uid:requesterUid});
             return res.status(200).json(ret);
         }
-        else res.status(404).json({message:'no matching type'});
+        else res.status(404).json({message:'no matching paper type'});
 
     } catch (error) {  
         return res.status(500).json({message:error});
@@ -262,13 +262,17 @@ router.post('/search/:type/:cite',async(req,res)=>{
                   ]
             });
         }
-        // console.log(prev)
+        console.log(prev) 
         prev.sort(function(b, a) {  //newest first
             return ((a.publishedOn < b.publishedOn) ? -1 : ((a.publishedOn> b.publishedOn) ? 1 : 0));
         })
-        
         const result=citePaper(prev,type,cite);
-        return res.status(200).json(result);
+        if(result.success){
+            return res.status(200).json(result.value);
+        }
+        else{
+            return res.status(400).json({message:"Unable to cite the papers"})
+        }
     } catch (error) {
         return res.status(500).json({message:error});
     }

@@ -8,7 +8,7 @@ const verifyToken=(req,res,next)=>{
         const token=authHeader.split(" ")[1];//bearer-idon't know why
         jwt.verify(token,process.env.JWT_SEC,(err,user)=>{//third parameters takes parameter that output expects
             if(err){ 
-                return res.status(403).json("Token is not valid"); 
+                return res.status(403).json({message:"Token is not valid"}); 
             }
             req.user=user;//req.user is different from req.body
             //if the authtoken verify successfully then we append our user in request , so that other functions can use its content
@@ -16,7 +16,7 @@ const verifyToken=(req,res,next)=>{
         });
     }
     else{
-        return res.status(401).json("you are not authenticated!");
+        return res.status(401).json({message:"you are not authenticated!"});
     }
 }
 
@@ -29,7 +29,7 @@ const verifyTokenAndAuthorization=(req,res,next)=>{
             next();
         }
         else{
-            res.status(403).json("You are not allowed to do that!");
+            res.status(403).json({message:"You are not allowed to do that!"});
             return;
         }
     });
