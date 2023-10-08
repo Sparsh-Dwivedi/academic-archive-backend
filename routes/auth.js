@@ -102,6 +102,9 @@ router.post("/user/update",verifyTokenAndAuthorization,async (req,res)=>{
 router.get("/getallusers",async(req,res)=>{
     try {
         let prev=await User.find();
+        prev.sort(function(a, b) {  //newest first
+            return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+        })
         return res.status(200).json(prev);
     } catch (error) {
         

@@ -212,55 +212,99 @@ router.post('/search/:type/:cite',async(req,res)=>{
         console.log(req.body)
         const query=req.body.query?req.body.query:'';
         const start=req.body.start?req.body.start:"1947-08-15";
-        const uid=req.body.uid?req.body.uid:'';
-        const department=req.body.department?req.body.department:'';
+        const uid=req.body.uid?req.body.uid:null;
+        const department=req.body.department?req.body.department:null;
         const end=req.body.end?req.body.end:"2025-01-01";
         const type=req.params.type;
         const cite=req.params.cite;
         var prev=[];
         if(type==='chapter'){
-            prev=await Chapter.find({
-                $and: [
-                    {"title":{$regex:query}},
-                    { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } },
-                    { "uid": uid},
-                    { "department": department},
-                  ]
-            });
+            if(uid){
+                prev=await Chapter.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "uid": uid},
+                      ]
+                });
+            }
+            else if(department){
+                prev=await Chapter.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "department": department},
+                      ]
+                });
+            }
         }
         else if(type==='book'){
-            prev=await Book.find({
-                $and: [
-                    {"title":{$regex:query}},
-                    { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } },
-                    { "uid": uid},
-                    { "department": department},
-                  ]
-            });
+            if(uid){
+                prev=await Book.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "uid": uid},
+                      ]
+                });
+            }
+            else if(department){
+                prev=await Book.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "department": department},
+                      ]
+                });
+            }
         }
         else if(type==='journal'){
-            prev=await Journal.find({
-                $and: [
-                    {"title":{$regex:query}},
-                    { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } },
-                    { "uid": uid},
-                    { "department": department},
-                  ]
-            });
+            if(uid){
+                prev=await Journal.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "uid": uid},
+                      ]
+                });
+            }
+            else if(department){
+                prev=await Journal.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "department": department},
+                      ]
+                });
+            }
         }
         else if(type==='conference'){
-            prev=await Conference.find({
-                $and: [
-                    {"title":{$regex:query}},
-                    { "publishedOn": { $gte: start } },
-                    { "publishedOn": { $lte: end } },
-                    { "uid": uid},
-                    { "department": department},
-                  ]
-            });
+            if(uid){
+                prev=await Conference.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "uid": uid},
+                      ]
+                });
+            }
+            else if(department){
+                prev=await Conference.find({
+                    $and: [
+                        {"title":{$regex:query}},
+                        { "publishedOn": { $gte: start } },
+                        { "publishedOn": { $lte: end } },
+                        { "department": department},
+                      ]
+                });
+            }
         }
         console.log(prev) 
         prev.sort(function(b, a) {  //newest first
