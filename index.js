@@ -2,12 +2,13 @@ const express = require("express")
 const mongoose = require("mongoose")
 const authRoute=require("./routes/auth")
 const papersRoute=require("./routes/papers")
+const recordRoute=require("./routes/addRecord")
 
 const cors= require("cors");
 const dotenv=require("dotenv");
 dotenv.config();
 const app=express();     
-app.use(cors());   
+app.use(cors());
 
 //  console.log(process.env.MONGO_URL);
 mongoose.set("strictQuery", true); //to eliminate a error
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/auth",authRoute);
 app.use("/api/papers",papersRoute);
+app.use("/api/record",recordRoute);
 
 
 app.get('/',(req,res)=>{

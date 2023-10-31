@@ -1,9 +1,15 @@
 const router=require("express").Router();
 const { citePaper } = require("../citation/service");
 const Book = require("../models/Book");
+const Btp = require("../models/Btp");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
+const Fdp = require("../models/Fdp");
 const Journal = require("../models/Journal");
+const Mtp = require("../models/Mtp");
+const Society = require("../models/Society");
+const Stc = require("../models/Stc");
+const Talk = require("../models/Talk");
 const { verifyTokenAndAuthorization } = require("./middleware");
 
 //create the paper
@@ -12,108 +18,57 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
     var retVal={};
     const {_id,...rest}=req.body;
     const adderUid=_id;
-    const paper={...rest};
-    if(type==='book'){
-        const oldBook=await Book.find({doi:paper.doi});
-        if(oldBook.length){
-            var users=oldBook[0].uid;
-            const pid=oldBook[0]._id;
-            if(users.find(ele=>ele===adderUid)){
-                return res.status(201).json({message:'Paper Already Exist'})
-            }
-            else {
-                try{
-                    retVal=await Book.updateOne({_id:pid},{$push:{uid:adderUid}});
-                } catch(err){
-                    return res.status(500).json({message:err});
-                }
-            }
-        }
-        else{   //new book
-            const newBook = new Book({uid:adderUid,...paper});
-            try{
-                retVal=await newBook.save(); 
-            } catch(err){
-                return res.status(500).json({message:err}); 
-            }
+    const record={...rest};
+    if(type==='btp'){
+        const newBtp = new Btp({uid:adderUid,...record});
+        try{
+            retVal=await newBtp.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
         }
     }
-    else if(type==='chapter'){
-        const oldChapter=await Chapter.find({doi:paper.doi});
-        if(oldChapter.length){
-            var users=oldChapter[0].uid;
-            const pid=oldChapter[0]._id;
-            if(users.find(ele=>ele===adderUid)){
-                return res.status(201).json({message:'Paper Already Exist'})
-            }
-            else {  //paper exist but new adder
-                try{
-                    retVal=await Chapter.updateOne({_id:pid},{$push:{uid:adderUid}});
-                } catch(err){
-                    return res.status(500).json({message:err});
-                }
-            }
-        }
-        else{   //new book
-            const newChapter = new Chapter({uid:adderUid,...paper});
-            try{
-                retVal=await newChapter.save(); 
-            } catch(err){
-                return res.status(500).json({message:err}); 
-            }
+    else if(type==='mtp'){
+        const newMtp = new Mtp({uid:adderUid,...record});
+        try{
+            retVal=await newMtp.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
         }
     }
-    else if(type==='journal'){
-        const oldJournal=await Journal.find({doi:paper.doi});
-        if(oldJournal.length){
-            var users=oldJournal[0].uid;
-            const pid=oldJournal[0]._id;
-            if(users.find(ele=>ele===adderUid)){
-                return res.status(201).json({message:'Paper Already Exist'})
-            }
-            else {  //paper exist but new adder
-                try{
-                    retVal=await Journal.updateOne({_id:pid},{$push:{uid:adderUid}});
-                } catch(err){
-                    return res.status(500).json({message:err});
-                }
-            }
-        }
-        else{   //new book
-            const newJournal = new Journal({uid:adderUid,...paper});
-            try{
-                retVal=await newJournal.save(); 
-            } catch(err){
-                return res.status(500).json({message:err}); 
-            }
+    else if(type==='society'){
+        const newSociety = new Society({uid:adderUid,...record});
+        try{
+            retVal=await newSociety.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
         }
     }
-    else if(type==='conference'){
-        const oldConference=await Conference.find({doi:paper.doi});
-        if(oldConference.length){
-            var users=oldConference[0].uid;
-            const pid=oldConference[0]._id;
-            if(users.find(ele=>ele===adderUid)){
-                return res.status(201).json({message:'Paper Already Exist'})
-            }
-            else {  //paper exist but new adder
-                try{
-                    retVal=await Conference.updateOne({_id:pid},{$push:{uid:adderUid}});
-                } catch(err){
-                    return res.status(500).json({message:err});
-                }
-            }
+    else if(type==='stc'){
+        const newStc = new Stc({uid:adderUid,...record});
+        try{
+            retVal=await newStc.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
         }
-        else{   //new 
-            const newConference = new Conference({uid:adderUid,...paper});
-            try{
-                retVal=await newConference.save(); 
-            } catch(err){
-                return res.status(500).json({message:err}); 
-            }
+    }
+    else if(type==='talk'){
+        const newTalk = new Talk({uid:adderUid,...record});
+        try{
+            retVal=await newTalk.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
+        }
+    }
+    else if(type==='fdp'){
+        const newFdp = new Fdp({uid:adderUid,...record});
+        try{
+            retVal=await newFdp.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
         }
     }
     else res.status(404).json({message:'no matching type'});
+    
     return res.status(200).json({message:'saved successfully',paper:retVal});
 
 });

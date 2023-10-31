@@ -73,3 +73,73 @@ journal
     "doi":"https://doi.org/10.1109/VR.2006.148",
     "issn":"1-4244-0225-5"
 }
+
+
+bpt
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "title":"Hey aren't we using 3d user , and will we ever?",
+    "students":[
+        {
+            "first":"yash",
+            "middle":"Vell",
+            "last":"Balakrishnan",
+            "rollno":"3456786"
+        },
+        {
+            "first":"Ramon",
+            "last":"Brown",
+            "rollno":"3456786"
+        }
+    ],
+    "year":"2020",
+    "type":"minor"
+}
+
+mtp
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "title":"Hey aren't we using 3d user , and will we ever?",
+    "student":{
+        "first":"yash",
+        "middle":"Vell",
+        "last":"Balakrishnan",
+        "rollno":"3456786"
+    },
+    "year":"2020"
+}
+
+fdp
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "name":"Venice Faculty Developement program",
+    "duration":"2 days",
+    "startDate":"2021-01-01",
+    "endDate":"2021-01-03",
+    "organiser":"SRC"
+}
+
+short term courses
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "name":"Social Pedalogy",
+    "duration":"4 months",
+    "startDate":"2022-01-01",
+    "endDate":"2022-05-01",       
+    "organiser":"NSUT"
+}
+
+society
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "societyName":"Crosslinks",
+    "duration":"4 months"
+}
+
+talk
+{
+    "_id":"64fd711a0604578415de9b4d",
+    "title":"Social Pedalogy",
+    "date":"2022-01-01",
+    "venue":"NSUT"
+}
