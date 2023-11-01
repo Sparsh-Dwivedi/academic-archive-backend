@@ -143,3 +143,24 @@ talk
     "date":"2022-01-01",
     "venue":"NSUT"
 }
+
+phd
+{
+    "_id":"65210233e5241e45a43f3194",
+    "scholarName":"Mrunal Thakur",
+    "enrolmentDate":"2019-06-01",
+    "phdTitle":"Intelligent computing",
+    "status":"Awarded"
+}
+
+project same as consultancy
+{
+    "_id":"65210233e5241e45a43f3194",
+    "title":"Academic Archive",
+    "awardingAgency":"DRDO",
+    "cost":"$499",
+    "status":"Awarded"
+}
+
+patent
+cost
