@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const { citePaper } = require("../citation/service");
+const { citePaper, extractFields } = require("../citation/service");
 const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
@@ -217,6 +217,7 @@ router.post('/search/:type/:cite',async(req,res)=>{
         const end=req.body.end?req.body.end:"2025-01-01";
         const type=req.params.type;
         const cite=req.params.cite;
+        const fields=req.body.fields;
         var prev=[];
         if(type==='chapter'){
             if(uid){
@@ -306,11 +307,13 @@ router.post('/search/:type/:cite',async(req,res)=>{
                 });
             }
         }
-        console.log(prev) 
+        // console.log(prev) 
         prev.sort(function(b, a) {  //newest first
             return ((a.publishedOn < b.publishedOn) ? -1 : ((a.publishedOn> b.publishedOn) ? 1 : 0));
         })
-        const result=citePaper(prev,type,cite);
+        var result;
+        if(cite==='manualfields')   result=extractFields(prev,fields);
+        else result=citePaper(prev,type,cite);
         if(result.success){
             return res.status(200).json(result.value);
         }
@@ -318,6 +321,7 @@ router.post('/search/:type/:cite',async(req,res)=>{
             return res.status(400).json({message:"Unable to cite the papers"})
         }
     } catch (error) {
+        console.log('erorr')
         return res.status(500).json({message:error});
     }
 });

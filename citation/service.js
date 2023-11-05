@@ -1,3 +1,4 @@
+const e = require("express");
 const { bookApa, bookMla, bookChicago, bookVancouver } = require("./book");
 const { chapterApa, chapterMla, chapterChicago, chapterVancouver } = require("./chapter");
 const { conferenceApa, conferenceMla, conferenceChicago, conferenceVancouver } = require("./conference");
@@ -47,4 +48,20 @@ const citePaper=(arr,type,cite)=>{
     return {success:1,value:temp};
 }
 
-module.exports ={capitalize,citePaper};
+const extractFields=(arr,fields)=>{
+    try {
+        let value=[];
+        arr.forEach(paper=>{
+            let temp={};
+            fields.forEach(field=>{
+                temp={...temp,[field]:paper[field]}
+            })
+            value.push(temp);
+        })
+        // console.log(value)
+        return {success:1,value};
+    } catch (error) {
+        return {success:0};
+    }
+}
+module.exports ={capitalize,citePaper,extractFields};
