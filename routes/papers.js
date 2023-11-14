@@ -4,7 +4,7 @@ const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
 const Journal = require("../models/Journal");
-const { verifyTokenAndAuthorization } = require("./middleware");
+const { verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("./middleware");
 
 //create the paper
 router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
@@ -207,7 +207,7 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
     }
 });
 
-router.post('/search/:type/:cite',async(req,res)=>{
+router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
     try {
         console.log(req.body)
         const query=req.body.query?req.body.query:'';
