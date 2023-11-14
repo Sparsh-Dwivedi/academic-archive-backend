@@ -9,7 +9,7 @@ const Society = require("../models/Society");
 const Stc = require("../models/Stc");
 const Talk = require("../models/Talk");
 const consultancy = require("../models/consultancy");
-const { verifyTokenAndAuthorization } = require("./middleware");
+const { verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./middleware");
 
 //create the paper
 router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
@@ -347,120 +347,49 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
     }
 });
 
-// router.post('/search/:type/:cite',async(req,res)=>{
-//     try {
-//         console.log(req.body)
-//         const query=req.body.query?req.body.query:'';
-//         const start=req.body.start?req.body.start:"1947-08-15";
-//         const uid=req.body.uid?req.body.uid:null;
-//         const department=req.body.department?req.body.department:null;
-//         const end=req.body.end?req.body.end:"2025-01-01";
-//         const type=req.params.type;
-//         const cite=req.params.cite;
-//         var prev=[];
-//         if(type==='chapter'){
-//             if(uid){
-//                 prev=await Chapter.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "uid": uid},
-//                       ]
-//                 });
-//             }
-//             else if(department){
-//                 prev=await Chapter.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "department": department},
-//                       ]
-//                 });
-//             }
-//         }
-//         else if(type==='book'){
-//             if(uid){
-//                 prev=await Book.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "uid": uid},
-//                       ]
-//                 });
-//             }
-//             else if(department){
-//                 prev=await Book.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "department": department},
-//                       ]
-//                 });
-//             }
-//         }
-//         else if(type==='journal'){
-//             if(uid){
-//                 prev=await Journal.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "uid": uid},
-//                       ]
-//                 });
-//             }
-//             else if(department){
-//                 prev=await Journal.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "department": department},
-//                       ]
-//                 });
-//             }
-//         }
-//         else if(type==='conference'){
-//             if(uid){
-//                 prev=await Conference.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "uid": uid},
-//                       ]
-//                 });
-//             }
-//             else if(department){
-//                 prev=await Conference.find({
-//                     $and: [
-//                         {"title":{$regex:query}},
-//                         { "publishedOn": { $gte: start } },
-//                         { "publishedOn": { $lte: end } },
-//                         { "department": department},
-//                       ]
-//                 });
-//             }
-//         }
-//         console.log(prev) 
-//         prev.sort(function(b, a) {  //newest first
-//             return ((a.publishedOn < b.publishedOn) ? -1 : ((a.publishedOn> b.publishedOn) ? 1 : 0));
-//         })
-//         const result=citePaper(prev,type,cite);
-//         if(result.success){
-//             return res.status(200).json(result.value);
-//         }
-//         else{
-//             return res.status(400).json({message:"Unable to cite the papers"})
-//         }
-//     } catch (error) {
-//         return res.status(500).json({message:error});
-//     }
-// });
+router.post('/search/:type',verifyTokenAndAdmin,async(req,res)=>{
+    try {
+        // console.log(req.body)
+        const uid=req.body.uid?req.body.uid:null;
+        // const department=req.body.department?req.body.department:null;
+        const type=req.params.type;
+        var prev=[];
+        if(type==='btp'){
+            if(uid){
+                prev=await Btp.find({
+                    $and: [
+                        { "year": { $gte: req.body.start?req.body.start:"1947-08-15" } },
+                        { "year": { $lte: req.body.end?req.body.end:"2025-01-01" } },
+                        { "uid": uid},
+                      ]
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
+                })
+            }
+        }
+        if(type==='mtp'){
+            if(uid){
+                prev=await Mtp.find({
+                    $and: [
+                        { "year": { $gte: req.body.start?req.body.start:"1947-08-15" } },
+                        { "year": { $lte: req.body.end?req.body.end:"2025-01-01" } },
+                        { "uid": uid},
+                      ]
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
+                })
+            }
+        }
+        
+        console.log(prev) 
+        return res.status(200).json(prev);
+
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+});
 
 
 module.exports=router;

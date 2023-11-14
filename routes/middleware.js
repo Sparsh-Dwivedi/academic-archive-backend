@@ -35,5 +35,19 @@ const verifyTokenAndAuthorization=(req,res,next)=>{
     });
 }
 
+const verifyTokenAndAdmin=(req,res,next)=>{
+    //after token verification if user's id in database is equal to id in params(link) then only it proceeds to next() which is parent func
+    verifyToken(req,res,()=>{ 
+        console.log(req.user)
+        if(req.user.isAdmin){
+            next();
+        }
+        else{
+            res.status(403).json({message:"You are not an admin"});
+            return;
+        }
+    });
+}
 
-module.exports ={verifyToken,verifyTokenAndAuthorization};
+
+module.exports ={verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin};

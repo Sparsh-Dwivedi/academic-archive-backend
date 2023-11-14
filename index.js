@@ -2,7 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const authRoute=require("./routes/auth")
 const papersRoute=require("./routes/papers")
-const recordRoute=require("./routes/addRecord")
+const recordRoute=require("./routes/records")
 
 const cors= require("cors");
 const dotenv=require("dotenv");
