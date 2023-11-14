@@ -11,7 +11,7 @@ router.post("/find",async (req,res)=>{
         const user=await User.findOne({username:req.body.username});
         if(!user)   return res.status(200).json({found:0});
         const {password,isAdmin,...rest}=user._doc;
-        return res.status(200).json(rest);  
+        return res.status(200).json({found:1,...rest});  
     } catch(err){
         res.status(500).json({message:err}); 
         return res;
