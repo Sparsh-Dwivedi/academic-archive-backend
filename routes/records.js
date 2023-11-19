@@ -1,6 +1,7 @@
 const router=require("express").Router();
 const Btp = require("../models/Btp");
 const Fdp = require("../models/Fdp");
+const User =require("../models/User");
 const Mtp = require("../models/Mtp");
 const Patents = require("../models/Patents");
 const Phd = require("../models/Phd");
@@ -351,39 +352,343 @@ router.post('/search/:type',verifyTokenAndAdmin,async(req,res)=>{
     try {
         // console.log(req.body)
         const uid=req.body.uid?req.body.uid:null;
-        // const department=req.body.department?req.body.department:null;
+        const department=req.body.department?req.body.department:null;
         const type=req.params.type;
         var prev=[];
         if(type==='btp'){
             if(uid){
                 prev=await Btp.find({
-                    $and: [
-                        { "year": { $gte: req.body.start?req.body.start:"1947-08-15" } },
-                        { "year": { $lte: req.body.end?req.body.end:"2025-01-01" } },
-                        { "uid": uid},
-                      ]
+                        $and: [
+                            { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": uid},
+                          ],
                 });
                 prev.sort(function(b, a) {  //newest first
                     return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
                 })
             }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let project=await Btp.find({
+                        $and: [
+                            { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": ele._id},
+                          ],
+                    });
+                    project.sort(function(b, a) {  //newest first
+                        return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
+                    })
+                    project.forEach(proj=>{
+                        prev.push({facultyName:ele.name,...proj._doc})
+                    })
+                }
+            }
         }
-        if(type==='mtp'){
+        else if(type==='mtp'){
             if(uid){
                 prev=await Mtp.find({
-                    $and: [
-                        { "year": { $gte: req.body.start?req.body.start:"1947-08-15" } },
-                        { "year": { $lte: req.body.end?req.body.end:"2025-01-01" } },
-                        { "uid": uid},
-                      ]
+                        $and: [
+                            { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": req.body.uid?req.body.uid:''},
+                          ],
                 });
                 prev.sort(function(b, a) {  //newest first
                     return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
                 })
             }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let project=await Mtp.find({
+                        $and: [
+                            { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": ele._id},
+                          ],
+                    });
+                    project.sort(function(b, a) {  //newest first
+                        return ((a.year < b.year) ? -1 : ((a.year> b.year) ? 1 : 0));
+                    })
+                    project.forEach(proj=>{
+                        prev.push({facultyName:ele.name,...proj._doc})
+                    })
+                }
+            }
         }
-        
-        console.log(prev) 
+        else if(type==='phd'){
+            if(uid){
+                prev=await Phd.find({
+                        $and: [
+                            // { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            // { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.enrolmentDate < b.enrolmentDate) ? -1 : ((a.enrolmentDate> b.enrolmentDate) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Phd.find({
+                        $and: [
+                            // { "year": { $gte: req.body.start?req.body.start:"1947" } },
+                            // { "year": { $lte: req.body.end?req.body.end:"2025" } },
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.enrolmentDate < b.enrolmentDate) ? -1 : ((a.enrolmentDate> b.enrolmentDate) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='fdp'){
+            if(uid){
+                prev=await Fdp.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Fdp.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='stc'){
+            if(uid){
+                prev=await Stc.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Stc.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='society'){
+            if(uid){
+                prev=await Society.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.societyName < b.societyName) ? -1 : ((a.societyName> b.societyName) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Society.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.societyName < b.societyName) ? -1 : ((a.societyName> b.societyName) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='talk'){
+            if(uid){
+                prev=await Talk.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Fdp.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.startDate < b.startDate) ? -1 : ((a.startDate> b.startDate) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='project'){
+            if(uid){
+                prev=await Project.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.title < b.title) ? -1 : ((a.title> b.title) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Project.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.title < b.title) ? -1 : ((a.title> b.title) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='consultancy'){
+            if(uid){
+                prev=await consultancy.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.title < b.title) ? -1 : ((a.title> b.title) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await consultancy.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  
+                        return ((a.title < b.title) ? -1 : ((a.title> b.title) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else if(type==='patent'){
+            if(uid){
+                prev=await Patents.find({
+                        $and: [
+                            { "uid": uid},
+                          ],
+                });
+                prev.sort(function(b, a) {  //newest first
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+            }
+            else if(department){
+                var faculty=await User.find({department:department},{ name: 1, _id: 1 })
+                faculty.sort(function(a, b) {  //alphabetically sorted
+                    return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0));
+                })
+                //get all the faculty of this department alphabetically sorted
+                for(const ele of faculty){
+                    let record=await Patents.find({
+                        $and: [
+                            { "uid": ele._id},
+                          ],
+                    });
+                    record.sort(function(b, a) {  //newest first
+                        return ((a.name < b.name) ? -1 : ((a.name> b.name) ? 1 : 0))
+                    })
+                    record.forEach(r=>{
+                        prev.push({facultyName:ele.name,...r._doc})
+                    })
+                }
+            }
+        }
+        else res.status(404).json({message:'no matching type'});
+
         return res.status(200).json(prev);
 
     } catch (error) {
