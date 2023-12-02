@@ -1,6 +1,6 @@
 // const {capitalize}=require('./service')
 const capitalize=(str)=>{
-    console.log(str)
+    // console.log(str)
     return str[0].toUpperCase()+str.slice(1);
 }
 const bookApa=(book)=>{

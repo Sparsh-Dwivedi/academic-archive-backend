@@ -10,12 +10,13 @@ const capitalize=(str)=>{
 }
 
 const citePaper=(arr,type,cite)=>{
-    var temp=[];
+    var yearWise={}
     // console.log(arr)
     // console.log(type)
     // console.log(cite)
     for(let i=0;i<arr.length;i++){
         var newValue;
+        // console.log(arr[i])
         if(type==='book'){
             if(cite==='apa')    newValue=(bookApa(arr[i]));
             if(cite==='mla')    newValue=(bookMla(arr[i]));
@@ -41,11 +42,13 @@ const citePaper=(arr,type,cite)=>{
             if(cite==='vancouver')    newValue=(conferenceVancouver(arr[i]));
         }
         if(newValue.success){
-            temp.push(newValue.value);
+            const year=arr[i].publishedOn.slice(0,4)
+            yearWise[year]=yearWise[year]||[]
+            yearWise[year].push(newValue.value)
         }
         else return newValue;
     }
-    return {success:1,value:temp};
+    return {success:1,value:yearWise};
 }
 
 const extractFields=(arr,fields)=>{

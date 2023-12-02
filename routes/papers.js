@@ -209,7 +209,7 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
 
 router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const query=req.body.query?req.body.query:'';
         const start=req.body.start?req.body.start:"1947-08-15";
         const uid=req.body.uid?req.body.uid:null;
@@ -315,7 +315,7 @@ router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
         if(cite==='manualfields')   result=extractFields(prev,fields);
         else result=citePaper(prev,type,cite);
         if(result.success){
-            return res.status(200).json(result.value);
+            return res.status(200).json(result.value);  //value is comming yearwise sorted
         }
         else{
             return res.status(400).json({message:"Unable to cite the papers"})
