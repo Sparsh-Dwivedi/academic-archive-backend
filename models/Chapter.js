@@ -29,6 +29,12 @@ const ChapterSchema=new mongoose.Schema(
         bookTitle:{
             type:String,    
         },
+        refType:{
+            type:String,    
+        },
+        nationality:{
+            type:String,    
+        },
         publishedOn:{
             type:String,
         },

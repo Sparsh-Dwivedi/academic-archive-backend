@@ -34,6 +34,9 @@ const JournalSchema=new mongoose.Schema(
         publishedOn:{
             type:String,
         },
+        refType:{
+            type:String,
+        },
         doi:{
             type:String,
             unique:true

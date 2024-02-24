@@ -12,6 +12,12 @@ const ConsultancySchema=new mongoose.Schema(
         awardingAgency:{
             type:String,
         },
+        patent:{
+            type:String,
+        },
+        duration:{
+            type:String,
+        },
         cost:{
             type:String,
         },

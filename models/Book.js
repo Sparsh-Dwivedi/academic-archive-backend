@@ -35,6 +35,15 @@ const BookSchema=new mongoose.Schema(
         edition:{
             type:String,
         },
+        bookType:{
+            type:String,
+        },
+        nationality:{
+            type:String,
+        },
+        refType:{
+            type:String,
+        },
     },
     {timestamps:true}
 );

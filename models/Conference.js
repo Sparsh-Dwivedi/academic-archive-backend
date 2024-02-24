@@ -22,6 +22,9 @@ const ConferenceSchema=new mongoose.Schema(
         conferenceTitle:{
             type:String,
         },
+        nationality:{
+            type:String,
+        },
         conferenceDate:{
             type:String,
         },
