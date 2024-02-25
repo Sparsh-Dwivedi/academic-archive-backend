@@ -4,6 +4,7 @@ const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
 const Journal = require("../models/Journal");
+const User = require("../models/User");
 const { verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("./middleware");
 
 //create the paper
@@ -207,6 +208,42 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
     }
 });
 
+router.post('/acr/a1',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        var prev=await Journal.find({
+            $and: [
+                { "publishedOn": { $gte: start } },
+                { "publishedOn": { $lte: end } },
+                { "uid": uid},
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.journalTitle+", vol. "+ele.volume+", no."+
+            ele.issue+","+ele.publishedOn.slice(4)+",pp."+ele.pageRange;
+            var c=ele.issn;
+            var d=ele.refType;
+            var e=ele.authors.length-1;
+            var mainAuthor=ele.authors[0].first+" "+(ele.authors[0].middle?ele.authors[0].middle+" ":"")+ele.authors[0].last;
+            var f=(ele.authors[0].first==user.name.split(" ")[0] && ele.authors[0].first==user.name.split(" ")[0])?'Yes':'No';
+            var g=(d=='Refered')?15:10;
+            doc={a,b,c,d,e,f,g};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+
+
 router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
     try {
         // console.log(req.body)
@@ -214,7 +251,7 @@ router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
         const start=req.body.start?req.body.start:"1947-08-15";
         const uid=req.body.uid?req.body.uid:null;
         const department=req.body.department?req.body.department:null;
-        const end=req.body.end?req.body.end:"2025-01-01";
+        const end=req.body.end?req.body.end:"2030-01-01";
         const type=req.params.type;
         const cite=req.params.cite;
         const fields=req.body.fields;

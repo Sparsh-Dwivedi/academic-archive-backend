@@ -23,6 +23,7 @@ const verifyToken=(req,res,next)=>{
 
 //verify authtoken and authorization
 const verifyTokenAndAuthorization=(req,res,next)=>{
+    console.log(req.body)
     //after token verification if user's id in database is equal to id in params(link) then only it proceeds to next() which is parent func
     verifyToken(req,res,()=>{ 
         if(req.user._id==req.body._id){
