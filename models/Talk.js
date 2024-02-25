@@ -14,6 +14,9 @@ const TalkSchema=new mongoose.Schema(
         },
         venue:{
             type:String
+        },
+        nationality:{
+            type:String
         }
     },
     {timestamps:true}
