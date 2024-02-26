@@ -1,10 +1,14 @@
 const router=require("express").Router();
-const { citePaper, extractFields } = require("../citation/service");
+const { citePaper, extractFields, capitalize } = require("../citation/service");
 const Book = require("../models/Book");
 const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
+const Fdp = require("../models/Fdp");
 const Journal = require("../models/Journal");
+const Project = require("../models/Project");
+const Stc = require("../models/Stc");
 const User = require("../models/User");
+const consultancy = require("../models/consultancy");
 const { verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("./middleware");
 
 //create the paper
@@ -208,7 +212,7 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
     }
 });
 
-router.post('/acr/a1',verifyTokenAndAuthorization,async(req,res)=>{
+router.post('/acr/3/a1',verifyTokenAndAuthorization,async(req,res)=>{
     try {
         const start=req.body.start?req.body.start:"1947-08-15";
         const end=req.body.end?req.body.end:"2030-01-01";
@@ -234,6 +238,290 @@ router.post('/acr/a1',verifyTokenAndAuthorization,async(req,res)=>{
             var f=(ele.authors[0].first==user.name.split(" ")[0] && ele.authors[0].first==user.name.split(" ")[0])?'Yes':'No';
             var g=(d=='Refered')?15:10;
             doc={a,b,c,d,e,f,g};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/3/a2',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        var prev=await Conference.find({
+            $and: [
+                { "publishedOn": { $gte: start } },
+                { "publishedOn": { $lte: end } },
+                { "uid": uid},
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.conferenceTitle+","+ele.publishedOn.slice(4)+",pp."+ele.pageRange;
+            var c=ele.nationality;
+            var d=ele.authors.length-1;
+            var e=(ele.authors[0].first==user.name.split(" ")[0] 
+                && ele.authors[0].first==user.name.split(" ")[0])?'Yes':'No';
+            var f=(c=="National")?5:10;
+            doc={a,b,c,d,e,f};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/3/b1',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        var prev=await Book.find({
+            $and: [
+                { "publishedOn": { $gte: start } },
+                { "publishedOn": { $lte: end } },
+                { "uid": uid},
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev.forEach(ele => {
+            var doc=[];
+            var a=ele.title+",pp."+ele.pageRange;
+            var b=ele.bookType;
+            var c=ele.publisher+","+ele.isbn;
+            var d=(ele.refType=="Refered")?"Yes":"No";
+            var e=(ele.authors.length-1)+",Published on:"+ele.publishedOn;
+            var f=ele.nationality;
+            var g=(f=="National")?25:(f=="International"?50:15);
+            doc={a,b,c,d,e,f,g};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/3/b2',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        var prev=await Chapter.find({
+            $and: [
+                { "publishedOn": { $gte: start } },
+                { "publishedOn": { $lte: end } },
+                { "uid": uid},
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev.forEach(ele => {
+            var doc=[];
+            var a=ele.title+",pp."+ele.pageRange;
+            var b=ele.bookTitle+", "+capitalize(ele.editors[0].last.slice(0,1))+
+            ". "+capitalize(ele.editors[0].first)+", "+ele.publisher;//yha editors dalne hai
+            var c=ele.isbn;
+            var d=(ele.refType=="Refered")?"Yes":"No";
+            var e=(ele.authors.length-1)+",Published on:"+ele.publishedOn;
+            var f=(ele.authors[0].first==user.name.split(" ")[0] 
+            && ele.authors[0].first==user.name.split(" ")[0])?'Yes':'No';
+            var g=(f=="International"?10:5);
+            doc={a,b,c,d,e,f,g};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/3/c12',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        const prev1=await Project.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Ongoing"}
+              ]
+        });
+        const prev2=await consultancy.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Ongoing"}
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev1.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e="15"; //need to make is check
+            doc={a,b,c,d,e};
+            result.push(doc);
+        });
+        prev2.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e="15"; //need to make is check
+            doc={a,b,c,d,e};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+
+router.post('/acr/3/c34',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        const prev1=await Project.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Completed"}
+              ]
+        });
+        const prev2=await consultancy.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Completed"}
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev1.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e=ele.patent;
+            var f="15"; //need to make is check
+            doc={a,b,c,d,e,f};
+            result.push(doc);
+        });
+        prev2.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e=ele.patent;
+            var f="15"; //need to make is check
+            doc={a,b,c,d,e,f};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+
+router.post('/acr/3/c34',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        const prev1=await Project.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Completed"}
+              ]
+        });
+        const prev2=await consultancy.find({
+            $and: [
+                { "uid": uid},
+                {"status":"Completed"}
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev1.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e=ele.patent;
+            var f="15"; //need to make is check
+            doc={a,b,c,d,e,f};
+            result.push(doc);
+        });
+        prev2.forEach(ele => {
+            var doc=[];
+            var a=ele.title;
+            var b=ele.awardingAgency;
+            var c=ele.duration;
+            var d=ele.cost;
+            var e=ele.patent;
+            var f="15"; //need to make is check
+            doc={a,b,c,d,e,f};
+            result.push(doc);
+        });
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/3/e1',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const start=req.body.start?req.body.start:"1947-08-15";
+        const end=req.body.end?req.body.end:"2030-01-01";
+        const uid=req.user._id?req.user._id:null;
+        const prev1=await Fdp.find({
+            $and: [
+                { "uid": uid},
+                { "startDate": { $gte: start } },
+                { "endDate": { $lte: end } },
+              ]
+        });
+        const prev2=await Stc.find({
+            $and: [
+                { "uid": uid},
+                { "startDate": { $gte: start } },
+                { "endDate": { $lte: end } },
+              ]
+        });
+        var user =await User.findById(req.user._id)
+        var result=[];
+        prev1.forEach(ele => {
+            var doc=[];
+            var a=ele.name;
+            var b=ele.duration;
+            var c=ele.organiser;
+            var d=ele.duration>2?20:10;
+            doc={a,b,c,d};
+            result.push(doc);
+        });
+        prev2.forEach(ele => {
+            var doc=[];
+            var a=ele.name;
+            var b=ele.duration;
+            var c=ele.organiser;
+            var d=ele.duration>2?20:10;
+            doc={a,b,c,d};
             result.push(doc);
         });
         return res.status(200).json(result);
