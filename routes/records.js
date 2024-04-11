@@ -11,6 +11,8 @@ const Stc = require("../models/Stc");
 const Talk = require("../models/Talk");
 const consultancy = require("../models/consultancy");
 const { verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./middleware");
+const TeachingDuty = require("../models/TeachingDuty");
+const Material = require("../models/Material");
 
 //create the paper
 router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
@@ -95,6 +97,22 @@ router.post("/create/:type",verifyTokenAndAuthorization,async (req,res)=>{
         const newPatent = new Patents({uid:adderUid,...record});
         try{
             retVal=await newPatent.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
+        }
+    }
+    else if(type==='teachingduty'){
+        const newDuty = new TeachingDuty({uid:adderUid,...record});
+        try{
+            retVal=await newDuty.save(); 
+        } catch(err){
+            return res.status(500).json({message:err}); 
+        }
+    }
+    else if(type==='material'){
+        const newDuty = new Material({uid:adderUid,...record});
+        try{
+            retVal=await newDuty.save(); 
         } catch(err){
             return res.status(500).json({message:err}); 
         }
@@ -240,6 +258,32 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
             return res.status(500).json({message:error});
         }
     }
+    else if(type==='teachingduty'){
+        try {
+            let prev=await TeachingDuty.findById(id); 
+            if(!prev || prev.uid!=_id){
+                return res.status(404).send({message:"Unable to update"})
+            };
+            prev=await TeachingDuty.findByIdAndUpdate(id,{$set:change});
+            return res.status(200).json({message:"Record Updated Successfully "});  
+        }
+        catch (error) {
+            return res.status(500).json({message:error});
+        }
+    }
+    else if(type==='material'){
+        try {
+            let prev=await Material.findById(id); 
+            if(!prev || prev.uid!=_id){
+                return res.status(404).send({message:"Unable to update"})
+            };
+            prev=await Material.findByIdAndUpdate(id,{$set:change});
+            return res.status(200).json({message:"Record Updated Successfully "});  
+        }
+        catch (error) {
+            return res.status(500).json({message:error});
+        }
+    }
     else res.status(404).json({message:'no matching type'});
 
     return res.status(200).json({message:'saved successfully',record:retVal});
@@ -335,6 +379,24 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
         else if(type==='phd'){
             try {
                 const ret=await Phd.find({uid:requesterUid});
+                return res.status(200).json(ret);
+            }
+            catch (error) {
+                return res.status(500).json({message:error});
+            }
+        }
+        else if(type==='teachingduty'){
+            try {
+                const ret=await TeachingDuty.find({uid:requesterUid});
+                return res.status(200).json(ret);
+            }
+            catch (error) {
+                return res.status(500).json({message:error});
+            }
+        }
+        else if(type==='material'){
+            try {
+                const ret=await Material.find({uid:requesterUid});
                 return res.status(200).json(ret);
             }
             catch (error) {
