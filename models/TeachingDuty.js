@@ -2,12 +2,10 @@ const mongoose=require("mongoose");
 
 const TeachingDutySchema=new mongoose.Schema(
     {
-        uid: [
-            {
+        uid: {
             type: String,
             required: true,
-            },
-        ],
+        },
         year: {
             type: String,
         },

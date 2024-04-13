@@ -5,8 +5,10 @@ const Chapter = require("../models/Chapter");
 const Conference = require("../models/Conference");
 const Fdp = require("../models/Fdp");
 const Journal = require("../models/Journal");
+const Material = require("../models/Material");
 const Project = require("../models/Project");
 const Stc = require("../models/Stc");
+const TeachingDuty = require("../models/TeachingDuty");
 const User = require("../models/User");
 const consultancy = require("../models/consultancy");
 const { verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("./middleware");
@@ -211,6 +213,38 @@ router.post('/getall/:type',verifyTokenAndAuthorization,async(req,res)=>{
         return res.status(500).json({message:error});
     }
 });
+
+router.post('/acr/1/a1',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const uid=req.user._id?req.user._id:null;
+        var prev = await TeachingDuty.find({uid:uid});
+        var result = [];
+        prev.forEach(ele=>{
+            var modeofteaching = ele.mode1 + " (July-Dec), "+ele.mode2+" (Jan-May)";
+            var hoursofteaching = ele.hours1 + " (July-Dec), "+ele.hours2+" (Jan-May)";
+            var doc =[ele.year,ele.classes,ele.courses1,ele.courses2,modeofteaching,16,hoursofteaching,ele.taken+"%",ele.excessHours];
+            result.push(doc);
+        })
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/1/a2',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const uid=req.user._id?req.user._id:null;
+        var prev = await Material.find({uid:uid});
+        var result = [];
+        prev.forEach(ele=>{
+            var doc =[ele.classes,ele.course,ele.consulted,ele.prescribed,ele.additional];
+            result.push(doc);
+        })
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
 
 router.post('/acr/3/a1',verifyTokenAndAuthorization,async(req,res)=>{
     try {
