@@ -318,25 +318,25 @@ router.post("/update/:type",verifyTokenAndAuthorization,async (req,res)=>{
     }
     else if(type==='Cat1Record'){
         try {
-            let prev=await Cat1Record.findById(id); 
+            let prev=await Cat1Record.findOne({uid:_id}); 
+            console.log(prev)
             if(!prev || prev.uid!=_id){
                 return res.status(404).send({message:"Unable to update"})
-            };
-            prev=await Cat1Record.findByIdAndUpdate(id,{$set:change});
-            return res.status(200).json({message:"Record Updated Successfully "});  
+            }
+            console.log(change)
+            retVal=await Cat1Record.findByIdAndUpdate(prev._id.toString(),{$set:change})
         }
         catch (error) {
             return res.status(500).json({message:error});
         }
-    }
+    } 
     else if(type==='Cat2Record'){
         try {
-            let prev=await Cat2Record.findById(id); 
+            let prev=await Cat2Record.findOne({uid:_id}); 
             if(!prev || prev.uid!=_id){
                 return res.status(404).send({message:"Unable to update"})
-            };
-            prev=await Cat2Record.findByIdAndUpdate(id,{$set:change});
-            return res.status(200).json({message:"Record Updated Successfully "});  
+            }
+            retVal=await Cat2Record.findByIdAndUpdate(prev._id.toString(),{$set:change})
         }
         catch (error) {
             return res.status(500).json({message:error});

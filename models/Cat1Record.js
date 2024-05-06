@@ -22,6 +22,9 @@ const Cat1Record=new mongoose.Schema(
         four23: {
             type: String,
         },
+        four3: {
+            type: String,
+        },
         four4: {
             type: String,
         },
