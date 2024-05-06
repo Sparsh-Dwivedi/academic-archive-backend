@@ -7,6 +7,8 @@ const Fdp = require("../models/Fdp");
 const Journal = require("../models/Journal");
 const Material = require("../models/Material");
 const Project = require("../models/Project");
+const Cat1Record = require("../models/Cat1Record")
+const Cat2Record = require("../models/Cat2Record")
 const Stc = require("../models/Stc");
 const TeachingDuty = require("../models/TeachingDuty");
 const User = require("../models/User");
@@ -246,6 +248,51 @@ router.post('/acr/1/a2',verifyTokenAndAuthorization,async(req,res)=>{
     }
 })
 
+router.post('/acr/1/a3',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const uid=req.user._id?req.user._id:null;
+        var prev = await Cat1Record.findOne({uid:uid});
+        var result = [];
+        result.push(Math.min(prev.four1*5,10))
+        result.push(Math.min(10,(prev.four21+prev.four22+prev.four23)*5))
+        result.push(Math.min(prev.four3*5,10))
+        result.push(Math.min(prev.four4*5,10))
+        result.push(Math.min(prev.four5*5,10))
+        result.push(Math.min(prev.four6*5,10))
+        result.push(Math.min(prev.four7*5,10))
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/1/a4',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const uid=req.user._id?req.user._id:null;
+        var prev = await Cat1Record.findOne({uid:uid});
+        var result = [prev.five1,prev.five2,prev.five3];
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
+router.post('/acr/2/a1',verifyTokenAndAuthorization,async(req,res)=>{
+    try {
+        const uid=req.user._id?req.user._id:null;
+        var prev = await Cat2Record.findOne({uid:uid});
+        var result = {
+            one:[parseInt(prev.cat21),parseInt(prev.cat22),parseInt(prev.cat23),parseInt(prev.cat24)],
+            two:[parseInt(prev.cat25),parseInt(prev.cat26),parseInt(prev.cat27),parseInt(prev.cat28),parseInt(prev.cat29)],
+            three:[parseInt(prev.cat210),parseInt(prev.cat211),parseInt(prev.cat212),parseInt(prev.cat213),parseInt(prev.cat214)],
+        };
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+})
+
 router.post('/acr/3/a1',verifyTokenAndAuthorization,async(req,res)=>{
     try {
         const start=req.body.start?req.body.start:"1947-08-15";
@@ -423,7 +470,6 @@ router.post('/acr/3/c12',verifyTokenAndAuthorization,async(req,res)=>{
     }
 })
 
-
 router.post('/acr/3/c34',verifyTokenAndAuthorization,async(req,res)=>{
     try {
         const start=req.body.start?req.body.start:"1947-08-15";
@@ -470,7 +516,6 @@ router.post('/acr/3/c34',verifyTokenAndAuthorization,async(req,res)=>{
         return res.status(500).json({message:error});
     }
 })
-
 
 router.post('/acr/3/c34',verifyTokenAndAuthorization,async(req,res)=>{
     try {
@@ -563,8 +608,6 @@ router.post('/acr/3/e1',verifyTokenAndAuthorization,async(req,res)=>{
         return res.status(500).json({message:error});
     }
 })
-
-
 
 router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
     try {
@@ -684,6 +727,5 @@ router.post('/search/:type/:cite',verifyTokenAndAdmin,async(req,res)=>{
         return res.status(500).json({message:error});
     }
 });
-
 
 module.exports=router;
